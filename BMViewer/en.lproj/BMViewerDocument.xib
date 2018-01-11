@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <deployment version="101000" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="BMViewerDocument">
+            <connections>
+                <outlet property="audioDeviceList" destination="100388" id="azg-Pn-T43"/>
+                <outlet property="audioFormatList" destination="100392" id="ip5-08-zx1"/>
+                <outlet property="audioLevelMeter" destination="152" id="100263"/>
+                <outlet property="previewView" destination="100261" id="100266"/>
+                <outlet property="videoDeviceList" destination="0XF-vU-ceC" id="QFR-td-BWc"/>
+                <outlet property="videoFormatList" destination="100391" id="azd-Aw-4ag"/>
+                <outlet property="videoFrmRteList" destination="100393" id="vnL-06-hv2"/>
+                <outlet property="window" destination="5" id="18"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="5" userLabel="Window" customClass="MyWindow">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="92" y="297" width="640" height="400"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <value key="minSize" type="size" width="640" height="400"/>
+            <view key="contentView" canDrawConcurrently="YES" misplaced="YES" id="6">
+                <rect key="frame" x="0.0" y="0.0" width="640" height="400"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <levelIndicator verticalHuggingPriority="750" misplaced="YES" id="152">
+                        <rect key="frame" x="20" y="80" width="467" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
+                        <levelIndicatorCell key="cell" alignment="left" maxValue="100" warningValue="80" criticalValue="95" id="100152"/>
+                    </levelIndicator>
+                    <popUpButton verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="100387">
+                        <rect key="frame" x="63" y="42" width="149" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="100406">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                            <menu key="menu" title="OtherViews" id="100407"/>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="-2" name="selectedObject" keyPath="selectedVideoDevice" previousBinding="100427" id="100428"/>
+                            <binding destination="-2" name="content" keyPath="videoDevices" id="100426">
+                                <dictionary key="options">
+                                    <integer key="NSInsertsNullPlaceholder" value="1"/>
+                                </dictionary>
+                            </binding>
+                            <binding destination="-2" name="contentValues" keyPath="videoDevices.localizedName" previousBinding="100426" id="100427">
+                                <dictionary key="options">
+                                    <integer key="NSInsertsNullPlaceholder" value="1"/>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </popUpButton>
+                    <popUpButton verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="100388">
+                        <rect key="frame" x="63" y="17" width="149" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="100404">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                            <menu key="menu" title="audioDeviceList" id="100405"/>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="-2" name="content" keyPath="audioDevices" id="100429">
+                                <dictionary key="options">
+                                    <integer key="NSInsertsNullPlaceholder" value="1"/>
+                                </dictionary>
+                            </binding>
+                            <binding destination="-2" name="contentValues" keyPath="audioDevices.localizedName" previousBinding="100429" id="100430">
+                                <dictionary key="options">
+                                    <integer key="NSInsertsNullPlaceholder" value="1"/>
+                                </dictionary>
+                            </binding>
+                            <binding destination="-2" name="selectedObject" keyPath="selectedAudioDevice" previousBinding="100430" id="100431"/>
+                        </connections>
+                    </popUpButton>
+                    <popUpButton verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="100391">
+                        <rect key="frame" x="214" y="42" width="231" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="100398">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                            <menu key="menu" title="videoFormatList" id="100399"/>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="-2" name="content" keyPath="selectedVideoDevice.formats" id="100445"/>
+                            <binding destination="-2" name="contentValues" keyPath="selectedVideoDevice.formats.localizedName" previousBinding="100445" id="100451"/>
+                            <binding destination="-2" name="selectedObject" keyPath="videoDeviceFormat" previousBinding="100451" id="100460"/>
+                        </connections>
+                    </popUpButton>
+                    <popUpButton verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="100392">
+                        <rect key="frame" x="214" y="17" width="391" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="100396">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                            <menu key="menu" title="audioFormatList" id="100397"/>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="-2" name="selectedObject" keyPath="audioDeviceFormat" previousBinding="100453" id="100462"/>
+                            <binding destination="-2" name="content" keyPath="selectedAudioDevice.formats" id="100449"/>
+                            <binding destination="-2" name="contentValues" keyPath="selectedAudioDevice.formats.localizedName" previousBinding="100449" id="100453"/>
+                        </connections>
+                    </popUpButton>
+                    <popUpButton verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="100393">
+                        <rect key="frame" x="447" y="42" width="158" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="100394">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                            <menu key="menu" title="videoFrmRteList" id="100395"/>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="-2" name="selectedObject" keyPath="frameRateRange" previousBinding="100458" id="100464"/>
+                            <binding destination="-2" name="content" keyPath="selectedVideoDevice.activeFormat.videoSupportedFrameRateRanges" id="100456"/>
+                            <binding destination="-2" name="contentValues" keyPath="selectedVideoDevice.activeFormat.videoSupportedFrameRateRanges.localizedName" previousBinding="100456" id="100458"/>
+                        </connections>
+                    </popUpButton>
+                    <textField verticalHuggingPriority="750" misplaced="YES" id="100408">
+                        <rect key="frame" x="21" y="46" width="40" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Video" id="100409">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" id="100410">
+                        <rect key="frame" x="20" y="21" width="41" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Audio" id="100411">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <popUpButton verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="0XF-vU-ceC">
+                        <rect key="frame" x="63" y="42" width="149" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="dEB-U9-vMe">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                            <menu key="menu" title="videoDeviceList" id="tzd-Q6-Rob"/>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="-2" name="selectedObject" keyPath="selectedVideoDevice" previousBinding="TcM-ZN-n2s" id="SpI-lf-Ig3"/>
+                            <binding destination="-2" name="content" keyPath="videoDevices" id="aOF-K1-2OR">
+                                <dictionary key="options">
+                                    <bool key="NSInsertsNullPlaceholder" value="YES"/>
+                                </dictionary>
+                            </binding>
+                            <binding destination="-2" name="contentValues" keyPath="videoDevices.localizedName" previousBinding="aOF-K1-2OR" id="TcM-ZN-n2s">
+                                <dictionary key="options">
+                                    <bool key="NSInsertsNullPlaceholder" value="YES"/>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </popUpButton>
+                    <button verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="77">
+                        <rect key="frame" x="488" y="70" width="138" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
+                        <buttonCell key="cell" type="push" title="Record" bezelStyle="rounded" imagePosition="right" alignment="center" borderStyle="border" inset="2" id="100077">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+IA
+</string>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="-2" name="enabled" keyPath="hasRecordingDevice" id="286"/>
+                            <binding destination="-2" name="value" keyPath="recording" id="100382"/>
+                        </connections>
+                    </button>
+                    <customView wantsLayer="YES" canDrawConcurrently="YES" misplaced="YES" id="100261" customClass="VideoView">
+                        <rect key="frame" x="0.0" y="118" width="640" height="282"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </customView>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="17"/>
+            </connections>
+            <point key="canvasLocation" x="140" y="95"/>
+        </window>
+    </objects>
+</document>

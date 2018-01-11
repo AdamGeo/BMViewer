@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[BMViewerDocument setSelectedAudioDevice:]:BMViewerDocument.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[NotifyMenu insertItem:atIndex:]:NotifyMenu.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "newItem.title">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument init]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.defVideoDevice">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument setWindow:]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "window.title">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument setSelectedVideoDevice:]:BMViewerDocument.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument setDeviceDefaults]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.selectedVideoDevice.localizedName">
+            </PersistentString>
+            <PersistentString
+               value = "self.defVideoFormat">
+            </PersistentString>
+            <PersistentString
+               value = "videoFormatList">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument setDeviceOptions]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "frmt.localizedName">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[AVRecorderDocument windowControllerDidLoadNib:]:AVRecorderDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[previewViewLayer bounds]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__24-[BMViewerDocument init]_block_invoke_3.87:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.videoFrmRteList">
+            </PersistentString>
+            <PersistentString
+               value = "self.videoFrmRteList.itemTitles">
+            </PersistentString>
+            <PersistentString
+               value = "self.selectedVideoDevice.activeFormat.localizedName">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[AVCaptureDeviceFormat(BMViewerAdditions) localizedName]:AVCaptureDeviceFormat_BMViewerAdditions.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[self formatDescription]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__24-[BMViewerDocument init]_block_invoke_2:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[[note userInfo] objectForKey:AVCaptureSessionErrorKey]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__24-[BMViewerDocument init]_block_invoke.129:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[(NSMenu*)note.object title]">
+            </PersistentString>
+            <PersistentString
+               value = "itm.title)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
