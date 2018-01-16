@@ -3,6 +3,7 @@
 #import "MyWindow.h"
 #import "AVCaptureDeviceFormat_BMViewerAdditions.h"
 #import "AVFrameRateRange_BMViewerAdditions.h"
+#import <IOKit/pwr_mgt/IOPMLib.h>
 
 @interface BMViewerDocument () <AVCaptureFileOutputDelegate, AVCaptureFileOutputRecordingDelegate, NSMenuDelegate>
 
@@ -21,9 +22,6 @@
 @property (weak) IBOutlet NSPopUpButton *audioDeviceList;
 @property (weak) IBOutlet NSPopUpButton *audioFormatList;
 
-
-
-// Methods for internal use
 - (void)refreshDevices;
 - (void)setTransportMode:(AVCaptureDeviceTransportControlsPlaybackMode)playbackMode speed:(AVCaptureDeviceTransportControlsSpeed)speed forDevice:(AVCaptureDevice *)device;
 
@@ -70,14 +68,17 @@ static BOOL cursorIsHidden = NO;
 {
     self = [super init];
     if (self) {
+        
+        CFStringRef reasonForActivity= CFSTR("BMViewer is viewing");
+        IOPMAssertionID assertionID;
+        IOPMAssertionCreateWithName(kIOPMAssertionTypePreventUserIdleDisplaySleep, kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
+        
         _firstLoad = YES;
         self.defVideoDevice = [[NSUserDefaults standardUserDefaults] stringForKey:@"VideoDevice"];
         self.defVideoFormat = [[NSUserDefaults standardUserDefaults] stringForKey:@"VideoFormat"];
         self.defVideoFrmRte = [[NSUserDefaults standardUserDefaults] stringForKey:@"VideoFrmRte"];
         self.defAudioDevice = [[NSUserDefaults standardUserDefaults] stringForKey:@"AudioDevice"];
         self.defAudioFormat = [[NSUserDefaults standardUserDefaults] stringForKey:@"AudioFormat"];
-        
-        
         
         [[self.videoDeviceList menu] setDelegate:self];
         [[self.videoFormatList menu] setDelegate:self];
@@ -88,8 +89,6 @@ static BOOL cursorIsHidden = NO;
         // Create a capture session
         session = [[AVCaptureSession alloc] init];
         
-        
-        
         // Capture Notification Observers
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
         id runtimeErrorObserver = [notificationCenter addObserverForName:AVCaptureSessionRuntimeErrorNotification
@@ -97,20 +96,20 @@ static BOOL cursorIsHidden = NO;
                                                                    queue:[NSOperationQueue mainQueue]
                                                               usingBlock:^(NSNotification *note) {
                                                                   dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                                                      [self presentError:[[note userInfo] objectForKey:AVCaptureSessionErrorKey]];
+                                                                      [self PresentErrorInLog:@"Session Error: " error:[[note userInfo] objectForKey:AVCaptureSessionErrorKey]];
                                                                   });
                                                               }];
         id didStartRunningObserver = [notificationCenter addObserverForName:AVCaptureSessionDidStartRunningNotification
                                                                      object:session
                                                                       queue:[NSOperationQueue mainQueue]
                                                                  usingBlock:^(NSNotification *note) {
-//                                                                     NSLog(@"did start running");
+                                                                     NSLog(@"did start running");
                                                                  }];
         id didStopRunningObserver = [notificationCenter addObserverForName:AVCaptureSessionDidStopRunningNotification
                                                                     object:session
                                                                      queue:[NSOperationQueue mainQueue]
                                                                 usingBlock:^(NSNotification *note) {
-//                                                                    NSLog(@"did stop running");
+                                                                    NSLog(@"did stop running");
                                                                 }];
         id deviceWasConnectedObserver = [notificationCenter addObserverForName:AVCaptureDeviceWasConnectedNotification
                                                                         object:nil
@@ -394,7 +393,7 @@ static BOOL cursorIsHidden = NO;
 - (void)windowControllerDidLoadNib:(NSWindowController *) aController
 {
     [super windowControllerDidLoadNib:aController];
-    if ([self.defVideoDevice isEqualToString:@"No Value"] || [self.defAudioDevice isEqualToString:@"No Value"]) {
+    if (([self.defVideoDevice isEqualToString:@"No Value"] || [self.defAudioDevice isEqualToString:@"No Value"])||(self.defVideoDevice == nil || self.defAudioDevice == nil)) {
         _firstLoad = NO;
     }
     else {
@@ -417,6 +416,17 @@ static BOOL cursorIsHidden = NO;
 {
     // Do nothing
 }
+
+
+- (void)PresentErrorInLog:(NSError *)error
+{
+    NSLog(@"%@",[error localizedDescription]);
+}
+- (void)PresentErrorInLog:(NSString*) lbl error:(NSError *)error
+{
+    NSLog(@"%@%@", lbl, [error localizedDescription]);
+}
+
 #pragma mark - Device selection
 - (void)refreshDevices
 {
@@ -430,7 +440,7 @@ static BOOL cursorIsHidden = NO;
     
     if (![[self audioDevices] containsObject:[self selectedAudioDevice]])
         [self setSelectedAudioDevice:nil];
-    
+//    [self logConfig];
     [[self session] commitConfiguration];
 }
 
@@ -453,7 +463,7 @@ static BOOL cursorIsHidden = NO;
         AVCaptureDeviceInput *newVideoDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:selectedVideoDevice error:&error];
         if (newVideoDeviceInput == nil) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
-                [self presentError:error];
+                [self PresentErrorInLog:error];
             });
         } else {
             [[self session] addInput:newVideoDeviceInput];
@@ -463,7 +473,7 @@ static BOOL cursorIsHidden = NO;
     
     if ([self selectedVideoDeviceProvidesAudio])
         [self setSelectedAudioDevice:nil];
-    
+//    [self logConfig];
     [[self session] commitConfiguration];
 }
 
@@ -481,7 +491,7 @@ static BOOL cursorIsHidden = NO;
         AVCaptureDeviceInput *newVideoDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:selectedVideoDevice error:&error];
         if (newVideoDeviceInput == nil) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
-                [self presentError:error];
+                [self PresentErrorInLog:error];
             });
         } else {
             if ([newVideoDeviceInput.device lockForConfiguration:&error]) {
@@ -489,7 +499,7 @@ static BOOL cursorIsHidden = NO;
                 [newVideoDeviceInput.device unlockForConfiguration];
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    [self presentError:error];
+                    [self PresentErrorInLog:error];
                 });
             }
             if ([newVideoDeviceInput.device lockForConfiguration:&error]) {
@@ -497,7 +507,7 @@ static BOOL cursorIsHidden = NO;
                 [newVideoDeviceInput.device unlockForConfiguration];
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    [self presentError:error];
+                    [self PresentErrorInLog:error];
                 });
             }
             [[self session] addInput:newVideoDeviceInput];
@@ -505,9 +515,9 @@ static BOOL cursorIsHidden = NO;
         }
     }
     
-    if ([self selectedVideoDeviceProvidesAudio])
-        [self setSelectedAudioDevice:nil];
-    
+//    if ([self selectedVideoDeviceProvidesAudio])
+//        [self setSelectedAudioDevice:nil];
+//    [self logConfig];
     [[self session] commitConfiguration];
 }
 
@@ -530,15 +540,29 @@ static BOOL cursorIsHidden = NO;
         AVCaptureDeviceInput *newAudioDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:selectedAudioDevice error:&error];
         if (newAudioDeviceInput == nil) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
-                [self presentError:error];
+                [self PresentErrorInLog:error];
             });
         } else {
             [[self session] addInput:newAudioDeviceInput];
             [self setAudioDeviceInput:newAudioDeviceInput];
         }
     }
-    
-    [[self session] commitConfiguration];
+    [self logConfig];
+    [[self session] commitConfiguration]; // changes video format here ?????!!!!!!??????
+    [self logConfig];
+}
+
+-(void) logConfig {
+    NSString *logTxt = @"\n-----------------------------------------------";
+    for (AVCaptureDeviceInput* devp in session.inputs) {
+        AVCaptureDevice * dev = devp.device;
+        NSString *devName = dev.localizedName;
+        NSString *activeFormat = dev.activeFormat.localizedName;
+        NSString *frmRte = [NSString stringWithFormat:@"FPS: %0.2f", CMTimeGetSeconds(dev.activeVideoMinFrameDuration)];
+        logTxt = [NSString stringWithFormat:@"%@\n%@ - %@ - %@", logTxt, devName, activeFormat, frmRte];
+    }
+    logTxt = [NSString stringWithFormat:@"%@\n-----------------------------------------------", logTxt];
+    NSLog(@"%@", logTxt);
 }
 
 #pragma mark - Device Properties
@@ -572,7 +596,7 @@ static BOOL cursorIsHidden = NO;
         [videoDevice unlockForConfiguration];
     } else {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            [self presentError:error];
+            [self PresentErrorInLog:error];
         });
     }
 }
@@ -596,7 +620,7 @@ static BOOL cursorIsHidden = NO;
         [audioDevice unlockForConfiguration];
     } else {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            [self presentError:error];
+            [self PresentErrorInLog:error];
         });
     }
 }
@@ -631,7 +655,7 @@ static BOOL cursorIsHidden = NO;
             [[self selectedVideoDevice] unlockForConfiguration];
         } else {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
-                [self presentError:error];
+                [self PresentErrorInLog:error];
             });
         }
     }
@@ -699,7 +723,7 @@ static BOOL cursorIsHidden = NO;
             NSError *error = [NSError errorWithDomain:NSURLErrorDomain
                                                  code:-57
                                              userInfo:userInfo];
-            [self presentError:error];
+            [self PresentErrorInLog:error];
         }
     } else {
         [[self movieFileOutput] stopRecording];
@@ -790,7 +814,7 @@ static BOOL cursorIsHidden = NO;
             [device unlockForConfiguration];
         } else {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
-                [self presentError:error];
+                [self PresentErrorInLog:error];
             });
         }
     }
@@ -816,7 +840,7 @@ static BOOL cursorIsHidden = NO;
 - (void)captureOutput:(AVCaptureFileOutput *)captureOutput willFinishRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections dueToError:(NSError *)error
 {
     dispatch_async(dispatch_get_main_queue(), ^(void) {
-        [self presentError:error];
+        [self PresentErrorInLog:error];
     });
 }
 
@@ -825,7 +849,7 @@ static BOOL cursorIsHidden = NO;
     if (recordError != nil && [[[recordError userInfo] objectForKey:AVErrorRecordingSuccessfullyFinishedKey] boolValue] == NO) {
         [[NSFileManager defaultManager] removeItemAtURL:outputFileURL error:nil];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            [self presentError:recordError];
+            [self PresentErrorInLog:recordError];
         });
     } else {
         // Move the recorded temporary file to a user-specified location

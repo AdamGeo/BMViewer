@@ -14,6 +14,17 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "__24-[BMViewerDocument init]_block_invoke.129:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[(NSMenu*)note.object title]">
+            </PersistentString>
+            <PersistentString
+               value = "itm.title)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[BMViewerDocument init]:BMViewerDocument.m">
          <PersistentStrings>
             <PersistentString
@@ -51,6 +62,14 @@
          <PersistentStrings>
             <PersistentString
                value = "frmt.localizedName">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument logConfig]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "session.inputs">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -93,13 +112,10 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "__24-[BMViewerDocument init]_block_invoke.129:BMViewerDocument.m">
+         contextName = "-[BMViewerDocument windowControllerDidLoadNib:]:BMViewerDocument.m">
          <PersistentStrings>
             <PersistentString
-               value = "[(NSMenu*)note.object title]">
-            </PersistentString>
-            <PersistentString
-               value = "itm.title)">
+               value = "self.defVideoDevice">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

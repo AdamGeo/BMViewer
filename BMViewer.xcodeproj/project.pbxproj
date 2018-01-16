@@ -10,6 +10,7 @@
 		0F328C9F2004505800163DC0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0F328C9E2004505800163DC0 /* Images.xcassets */; };
 		0F328CA22004519D00163DC0 /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F328CA12004519D00163DC0 /* VideoView.m */; };
 		0F6972B02003440C00ADFFB3 /* MyWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F6972AF2003440C00ADFFB3 /* MyWindow.m */; };
+		0FC025AE200C857C001A3E06 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FC025AD200C857C001A3E06 /* IOKit.framework */; };
 		2FC9301E139D85A500DA0D4F /* AVCaptureDeviceFormat_BMViewerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FC9301D139D85A500DA0D4F /* AVCaptureDeviceFormat_BMViewerAdditions.m */; };
 		2FC93021139D875D00DA0D4F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC93020139D875D00DA0D4F /* CoreMedia.framework */; };
 		2FC93025139D8CC500DA0D4F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC93024139D8CC500DA0D4F /* AudioToolbox.framework */; };
@@ -29,6 +30,7 @@
 		0F328CA12004519D00163DC0 /* VideoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoView.m; sourceTree = "<group>"; };
 		0F6972AE2003440C00ADFFB3 /* MyWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyWindow.h; sourceTree = "<group>"; };
 		0F6972AF2003440C00ADFFB3 /* MyWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyWindow.m; sourceTree = "<group>"; };
+		0FC025AD200C857C001A3E06 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		2FC9301C139D85A500DA0D4F /* AVCaptureDeviceFormat_BMViewerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVCaptureDeviceFormat_BMViewerAdditions.h; sourceTree = "<group>"; };
 		2FC9301D139D85A500DA0D4F /* AVCaptureDeviceFormat_BMViewerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCaptureDeviceFormat_BMViewerAdditions.m; sourceTree = "<group>"; };
 		2FC93020139D875D00DA0D4F /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -53,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0FC025AE200C857C001A3E06 /* IOKit.framework in Frameworks */,
 				E9C967F8137B51A700C6D18B /* AVFoundation.framework in Frameworks */,
 				2FC93025139D8CC500DA0D4F /* AudioToolbox.framework in Frameworks */,
 				E9C967D3137B516200C6D18B /* Cocoa.framework in Frameworks */,
@@ -83,6 +86,7 @@
 		E9C967D1137B516200C6D18B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0FC025AD200C857C001A3E06 /* IOKit.framework */,
 				2FC93024139D8CC500DA0D4F /* AudioToolbox.framework */,
 				E9C967F7137B51A700C6D18B /* AVFoundation.framework */,
 				E9C967D2137B516200C6D18B /* Cocoa.framework */,
