@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment version="101000" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -10,8 +9,12 @@
             <connections>
                 <outlet property="audioDeviceList" destination="100388" id="azg-Pn-T43"/>
                 <outlet property="audioFormatList" destination="100392" id="ip5-08-zx1"/>
-                <outlet property="audioLevelMeter" destination="152" id="100263"/>
+                <outlet property="boostEnabled" destination="Gs2-m2-kin" id="HJm-aY-qy6"/>
+                <outlet property="exportLbl" destination="ZaC-6K-W79" id="Lgs-a5-0aV"/>
+                <outlet property="makeSmaller" destination="Lnl-o1-RCA" id="4t8-An-giM"/>
                 <outlet property="previewView" destination="100261" id="100266"/>
+                <outlet property="rad_MOV" destination="dtI-jL-ehk" id="QRP-td-FR4"/>
+                <outlet property="saveDialogCustomView" destination="SyI-zf-wVo" id="Bmf-fq-dn7"/>
                 <outlet property="videoDeviceList" destination="0XF-vU-ceC" id="QFR-td-BWc"/>
                 <outlet property="videoFormatList" destination="100391" id="azd-Aw-4ag"/>
                 <outlet property="videoFrmRteList" destination="100393" id="vnL-06-hv2"/>
@@ -30,36 +33,9 @@
                 <rect key="frame" x="0.0" y="0.0" width="640" height="400"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <levelIndicator verticalHuggingPriority="750" misplaced="YES" id="152">
-                        <rect key="frame" x="20" y="80" width="467" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
-                        <levelIndicatorCell key="cell" alignment="left" maxValue="100" warningValue="80" criticalValue="95" id="100152"/>
-                    </levelIndicator>
-                    <popUpButton verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="100387">
-                        <rect key="frame" x="63" y="42" width="149" height="22"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="100406">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
-                            <menu key="menu" title="OtherViews" id="100407"/>
-                        </popUpButtonCell>
-                        <connections>
-                            <binding destination="-2" name="selectedObject" keyPath="selectedVideoDevice" previousBinding="100427" id="100428"/>
-                            <binding destination="-2" name="content" keyPath="videoDevices" id="100426">
-                                <dictionary key="options">
-                                    <integer key="NSInsertsNullPlaceholder" value="1"/>
-                                </dictionary>
-                            </binding>
-                            <binding destination="-2" name="contentValues" keyPath="videoDevices.localizedName" previousBinding="100426" id="100427">
-                                <dictionary key="options">
-                                    <integer key="NSInsertsNullPlaceholder" value="1"/>
-                                </dictionary>
-                            </binding>
-                        </connections>
-                    </popUpButton>
                     <popUpButton verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="100388">
                         <rect key="frame" x="63" y="17" width="149" height="22"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="100404">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -94,7 +70,7 @@
                         </connections>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="100392">
-                        <rect key="frame" x="214" y="17" width="391" height="22"/>
+                        <rect key="frame" x="214" y="17" width="344" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="100396">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -107,8 +83,12 @@
                             <binding destination="-2" name="contentValues" keyPath="selectedAudioDevice.formats.localizedName" previousBinding="100449" id="100453"/>
                         </connections>
                     </popUpButton>
+                    <customView wantsLayer="YES" canDrawConcurrently="YES" misplaced="YES" id="100261" customClass="VideoView">
+                        <rect key="frame" x="0.0" y="102" width="640" height="298"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </customView>
                     <popUpButton verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="100393">
-                        <rect key="frame" x="447" y="42" width="158" height="22"/>
+                        <rect key="frame" x="447" y="42" width="176" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="100394">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -139,9 +119,25 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <button verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="77">
+                        <rect key="frame" x="264" y="69" width="113" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
+                        <buttonCell key="cell" type="push" title="Record" bezelStyle="rounded" imagePosition="right" alignment="center" borderStyle="border" inset="2" id="100077">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+IA
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="recordOnOff:" target="-2" id="88k-bS-GZq"/>
+                            <binding destination="-2" name="enabled" keyPath="hasRecordingDevice" id="286"/>
+                            <binding destination="-2" name="value" keyPath="recording" id="100382"/>
+                        </connections>
+                    </button>
                     <popUpButton verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="0XF-vU-ceC">
-                        <rect key="frame" x="63" y="42" width="149" height="22"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <rect key="frame" x="63" y="43" width="149" height="22"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="dEB-U9-vMe">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -161,25 +157,26 @@
                             </binding>
                         </connections>
                     </popUpButton>
-                    <button verticalHuggingPriority="750" misplaced="YES" imageHugsTitle="YES" id="77">
-                        <rect key="frame" x="488" y="70" width="138" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
-                        <buttonCell key="cell" type="push" title="Record" bezelStyle="rounded" imagePosition="right" alignment="center" borderStyle="border" inset="2" id="100077">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                    <button verticalHuggingPriority="750" misplaced="YES" id="Gs2-m2-kin">
+                        <rect key="frame" x="561" y="19" width="61" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="check" title="Boost" bezelStyle="regularSquare" imagePosition="left" inset="2" id="HjZ-Qp-sAX">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
-                            <string key="keyEquivalent" base64-UTF8="YES">
-IA
-</string>
                         </buttonCell>
                         <connections>
-                            <binding destination="-2" name="enabled" keyPath="hasRecordingDevice" id="286"/>
-                            <binding destination="-2" name="value" keyPath="recording" id="100382"/>
+                            <action selector="enableBoost:" target="-2" id="Ylw-63-T8Z"/>
                         </connections>
                     </button>
-                    <customView wantsLayer="YES" canDrawConcurrently="YES" misplaced="YES" id="100261" customClass="VideoView">
-                        <rect key="frame" x="0.0" y="118" width="640" height="282"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    </customView>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="ZaC-6K-W79">
+                        <rect key="frame" x="291" y="60" width="114" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Exporting..." id="wiZ-Ze-ps9">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                 </subviews>
             </view>
             <connections>
@@ -187,5 +184,53 @@ IA
             </connections>
             <point key="canvasLocation" x="140" y="95"/>
         </window>
+        <customView misplaced="YES" id="SyI-zf-wVo" userLabel="View">
+            <rect key="frame" x="0.0" y="0.0" width="460" height="95"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <button verticalHuggingPriority="750" misplaced="YES" id="dtI-jL-ehk">
+                    <rect key="frame" x="161" y="58" width="57" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="radio" title="MOV" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="NyM-7U-nJY">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="videoTypeChange:" target="-2" id="uKs-EX-tKe"/>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" misplaced="YES" tag="1" id="fdv-st-lgZ">
+                    <rect key="frame" x="246" y="58" width="57" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="radio" title="MP4" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="fLr-ae-Hzz">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="videoTypeChange:" target="-2" id="wfT-ul-FIP"/>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" misplaced="YES" id="Lnl-o1-RCA">
+                    <rect key="frame" x="264" y="35" width="68" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <buttonCell key="cell" type="check" title="Smaller" bezelStyle="regularSquare" imagePosition="left" enabled="NO" state="on" inset="2" id="rP9-sG-7gl">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                </button>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" id="vIW-im-91t" customClass="tipImage">
+                    <rect key="frame" x="216" y="10" width="28" height="28"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Image" id="UGk-SW-DpC"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="infoDescription" value="MOV is a direct copy of the recording, very fast.\nConversion to MP4 can take a long time."/>
+                    </userDefinedRuntimeAttributes>
+                </imageView>
+            </subviews>
+            <point key="canvasLocation" x="168" y="476.5"/>
+        </customView>
     </objects>
+    <resources>
+        <image name="Image" width="14" height="14"/>
+    </resources>
 </document>

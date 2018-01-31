@@ -1,5 +1,8 @@
 #import <Cocoa/Cocoa.h>
-
+#import <AudioUnit/AudioUnit.h>
+#import <AudioToolbox/AudioToolbox.h>
+#import <AVFoundation/AVFoundation.h>
+//#import <AVFoundation/AVAudioses>
 @class AVCaptureVideoPreviewLayer;
 @class AVCaptureSession;
 @class AVCaptureDeviceInput;
@@ -10,34 +13,34 @@
 @class AVCaptureDeviceFormat;
 @class AVFrameRateRange;
 
-@interface BMViewerDocument : NSDocument
+@interface BMViewerDocument : NSDocument 
 {
 @private
-    NSView                        *__weak previewView;
-    AVCaptureVideoPreviewLayer    *previewLayer;
-    NSLevelIndicator            *__weak audioLevelMeter;
+    IBOutlet NSView             *saveDialogCustomView;
+    NSView                      *__weak previewView;
+    AVCaptureVideoPreviewLayer  *previewLayer;
     
     AVCaptureSession            *session;
     AVCaptureDeviceInput        *videoDeviceInput;
     AVCaptureDeviceInput        *audioDeviceInput;
     AVCaptureMovieFileOutput    *movieFileOutput;
-    AVCaptureAudioPreviewOutput    *audioPreviewOutput;
+    AVCaptureAudioPreviewOutput *audioPreviewOutput;
+    AVCaptureConnection         *movieFileOutputConnection;
     
-    NSArray                        *videoDevices;
-    NSArray                        *audioDevices;
+    NSArray                     *videoDevices;
+    NSArray                     *audioDevices;
     
-    NSTimer                        *__weak audioLevelTimer;
+    NSTimer                     *__weak audioLevelTimer;
     
-    NSArray                        *observers;
+    NSArray                     *observers;
 }
 
-@property (strong) NSString *defVideoDevice;
-@property (strong) NSString *defVideoFormat;
-@property (strong) NSString *defVideoFrmRte;
-@property (strong) NSString *defAudioDevice;
-@property (strong) NSString *defAudioFormat;
-
-
+//@property (strong) NSString *defVideoDevice;
+//@property (strong) NSString *defVideoFormat;
+//@property (strong) NSString *defVideoFrmRte;
+//@property (strong) NSString *defAudioDevice;
+//@property (strong) NSString *defAudioFormat;
+//@property (nonatomic) NSInteger defBoost;
 
 @property (assign) NSRect frameForNonFullScreenMode;
 @property (assign) NSRect viewForNonFullScreenMode;
@@ -52,23 +55,24 @@
 @property (weak) AVCaptureDeviceFormat *videoDeviceFormat;
 @property (weak) AVCaptureDeviceFormat *audioDeviceFormat;
 @property (weak) AVFrameRateRange *frameRateRange;
-- (IBAction)lockVideoDeviceForConfiguration:(id)sender;
 
 #pragma mark - Recording
 @property (strong) AVCaptureSession *session;
-//@property (weak, readonly) NSArray *availableSessionPresets;
 @property (readonly) BOOL hasRecordingDevice;
 @property (assign,getter=isRecording) BOOL recording;
 
 #pragma mark - Preview
 @property (weak) IBOutlet NSView *previewView;
 @property (assign) float previewVolume;
-@property (weak) IBOutlet NSLevelIndicator *audioLevelMeter;
 
-#pragma mark - Transport Controls
-@property (readonly,getter=isPlaying) BOOL playing;
-@property (readonly,getter=isRewinding) BOOL rewinding;
-@property (readonly,getter=isFastForwarding) BOOL fastForwarding;
-- (IBAction)stop:(id)sender;
+- (IBAction)savePreset:(id)sender;
+- (IBAction)loadPreset:(id)sender;
+- (IBAction)videoTypeChange:(id)sender;
+@property (weak) IBOutlet NSButton *makeSmaller;
+@property (weak) IBOutlet NSButton *rad_MOV;
+@property (weak) IBOutlet NSTextField *exportLbl;
+
+- (IBAction)recordOnOff:(id)sender;
+- (IBAction)enableBoost:(id)sender;
 
 @end

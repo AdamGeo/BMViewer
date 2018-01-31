@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment version="101000" identifier="macosx"/>
+        <deployment version="101300" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
     </dependencies>
     <objects>
@@ -32,6 +32,16 @@
                             <menuItem title="Enter Fullscreen" keyEquivalent="f" id="ECS-ZG-xiP">
                                 <connections>
                                     <action selector="ToggleFullscreen:" target="-1" id="FCo-ck-B2w"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Save Preset" keyEquivalent="s" id="lX2-Ws-SIP">
+                                <connections>
+                                    <action selector="savePreset:" target="-1" id="63p-Jo-ejK"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Load Next Preset" tag="8" keyEquivalent="p" id="YXT-Dg-Y21">
+                                <connections>
+                                    <action selector="loadPreset:" target="-1" id="CON-xO-w5b"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="79">

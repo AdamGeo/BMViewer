@@ -3,32 +3,24 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "-[BMViewerDocument setSelectedAudioDevice:]:BMViewerDocument.m">
-      </ContextState>
-      <ContextState
-         contextName = "-[NotifyMenu insertItem:atIndex:]:NotifyMenu.m">
+         contextName = "__92-[BMViewerDocument captureOutput:didFinishRecordingToOutputFileAtURL:fromConnections:error:]_block_invoke_3:BMViewerDocument.m">
          <PersistentStrings>
             <PersistentString
-               value = "newItem.title">
+               value = "self.makeSmaller.state">
+            </PersistentString>
+            <PersistentString
+               value = "exporter.outputFileType">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "__24-[BMViewerDocument init]_block_invoke.129:BMViewerDocument.m">
+         contextName = "-[BMViewerDocument exportProgress:]:BMViewerDocument.m">
          <PersistentStrings>
             <PersistentString
-               value = "[(NSMenu*)note.object title]">
+               value = "exporter.progress">
             </PersistentString>
             <PersistentString
-               value = "itm.title)">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[BMViewerDocument init]:BMViewerDocument.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "self.defVideoDevice">
+               value = "exporter.status">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -41,7 +33,51 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[BMViewerDocument setSelectedVideoDevice:]:BMViewerDocument.m">
+         contextName = "-[AVCaptureDeviceFormat(BMViewerAdditions) localizedName]:AVCaptureDeviceFormat_BMViewerAdditions.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[self formatDescription]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument updateAudioLevels:]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "volTracker">
+            </PersistentString>
+            <PersistentString
+               value = "[self audioLevelMeter].maxValue">
+            </PersistentString>
+            <PersistentString
+               value = "(pow(10.f, 0.05f * decibels) * 100.0f)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument videoTypeChange:]:BMViewerDocument.m">
+      </ContextState>
+      <ContextState
+         contextName = "__24-[BMViewerDocument init]_block_invoke.163:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "frmt.localizedName">
+            </PersistentString>
+            <PersistentString
+               value = "self.defVideoFrmRte">
+            </PersistentString>
+            <PersistentString
+               value = "[frmt.localizedName isEqualToString:self.defVideoFrmRte]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument deviceChangedAlert:]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "alertLbl.superview">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "-[BMViewerDocument setDeviceDefaults]:BMViewerDocument.m">
@@ -66,6 +102,65 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "-[BMViewerDocument captureOutput:didFinishRecordingToOutputFileAtURL:fromConnections:error:]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[savePanel nameFieldStringValue]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__24-[BMViewerDocument init]_block_invoke.126:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.defVideoDevice">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[NotifyMenu insertItem:atIndex:]:NotifyMenu.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "newItem.title">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument setSelectedVideoDevice:]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.selectedVideoDevice.formats.count">
+            </PersistentString>
+            <PersistentString
+               value = "self.videoFormatList.itemArray.count">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument windowControllerDidLoadNib:]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.defVideoDevice">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__24-[BMViewerDocument init]_block_invoke_2:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[[note userInfo] objectForKey:AVCaptureSessionErrorKey]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__41-[BMViewerDocument setVideoDeviceFormat:]_block_invoke:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.defVideoFrmRte">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[BMViewerDocument logConfig]:BMViewerDocument.m">
          <PersistentStrings>
             <PersistentString
@@ -74,12 +169,18 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[AVRecorderDocument windowControllerDidLoadNib:]:AVRecorderDocument.m">
+         contextName = "-[tipImage unescape:]:tipImage.m">
          <PersistentStrings>
             <PersistentString
-               value = "[previewViewLayer bounds]">
+               value = "[string characterAtIndex:i]">
+            </PersistentString>
+            <PersistentString
+               value = "[string characterAtIndex:i+1]">
             </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument setSelectedAudioDevice:]:BMViewerDocument.m">
       </ContextState>
       <ContextState
          contextName = "__24-[BMViewerDocument init]_block_invoke_3.87:BMViewerDocument.m">
@@ -96,26 +197,73 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[AVCaptureDeviceFormat(BMViewerAdditions) localizedName]:AVCaptureDeviceFormat_BMViewerAdditions.m">
+         contextName = "-[BMViewerDocument refreshDevices]:BMViewerDocument.m">
          <PersistentStrings>
             <PersistentString
-               value = "[self formatDescription]">
+               value = "_firstLoad">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "__24-[BMViewerDocument init]_block_invoke_2:BMViewerDocument.m">
+         contextName = "__24-[BMViewerDocument init]_block_invoke:BMViewerDocument.m">
          <PersistentStrings>
             <PersistentString
-               value = "[[note userInfo] objectForKey:AVCaptureSessionErrorKey]">
+               value = "[theEvent modifierFlags]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[BMViewerDocument windowControllerDidLoadNib:]:BMViewerDocument.m">
+         contextName = "-[BMViewerDocument init]:BMViewerDocument.m">
          <PersistentStrings>
+            <PersistentString
+               value = "self.exportLbl">
+            </PersistentString>
             <PersistentString
                value = "self.defVideoDevice">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument setupAudiokit:]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[[AudioKit inputDevice] isEqual:inputDevice]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[AVRecorderDocument windowControllerDidLoadNib:]:AVRecorderDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[previewViewLayer bounds]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__24-[BMViewerDocument init]_block_invoke.175:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "foundVFormat">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__24-[BMViewerDocument init]_block_invoke.129:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[self selectedAudioDevice].localizedName">
+            </PersistentString>
+            <PersistentString
+               value = "[(NSMenu*)note.object title]">
+            </PersistentString>
+            <PersistentString
+               value = "[(NSMenu*)note.object isEqual:self.videoFormatList.menu]">
+            </PersistentString>
+            <PersistentString
+               value = "itm.title)">
+            </PersistentString>
+            <PersistentString
+               value = "[(NSMenu*)note.object isEqual:self.videoFrmRteList.menu]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

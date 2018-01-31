@@ -19,5 +19,4 @@
 - (IBAction)ToggleFullscreen:(id)sender {
     [super toggleFullScreen:nil];
 }
-
 @end
