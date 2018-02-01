@@ -484,7 +484,7 @@ static BOOL cursorIsHidden = NO;
                 AKMicrophone *mic = [[AKMicrophone alloc] init];
                 
                 volTracker = [[AKAmplitudeTracker alloc] init:mic halfPowerPoint:0.5 threshold:1.0 thresholdCallback:^(BOOL f) {
-                    NSLog(@"thresholdCallback");
+//                    NSLog(@"thresholdCallback");
                 }];
                 
                 AKBooster *boost = [[AKBooster alloc] init:volTracker gain:10.0];
@@ -776,30 +776,7 @@ static BOOL cursorIsHidden = NO;
                             [[self session] addInput:newVideoDeviceInput];
                             [self setVideoDeviceInput:newVideoDeviceInput];
                         }
-                        //set video format
-                        AVCaptureDeviceFormat *deviceFormat;
-                        for (AVCaptureDeviceFormat *frmt in self.selectedVideoDevice.formats) {
-                            if ([frmt.localizedName isEqualToString:encodedVideoFormat]) {
-                                deviceFormat = frmt;
-                                break;
-                            }
-                        }
-                        if ([self.selectedVideoDevice lockForConfiguration:&error]) {
-                            [self.selectedVideoDevice setActiveFormat:deviceFormat];
-                            [self.selectedVideoDevice unlockForConfiguration];
-                        } else {
-                            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                [self PresentErrorInLog:error];
-                            });
-                        }
-                        //set video framte rate
-                        AVFrameRateRange *frameRateRange;
-                        for (AVFrameRateRange *frmt in self.selectedVideoDevice.activeFormat.videoSupportedFrameRateRanges) {
-                            if ([frmt.localizedName isEqualToString:encodedVideoFrmRte]) {
-                                frameRateRange = frmt;
-                                break;
-                            }
-                        }
+
 
                         //set audio device
                         if ([self audioDeviceInput]) {
@@ -850,6 +827,30 @@ static BOOL cursorIsHidden = NO;
                             [self.boostEnabled setState:NSControlStateValueOn];
                             [self.boostEnabled performClick:self];
                         }
+                        //set video format
+                        AVCaptureDeviceFormat *deviceFormat;
+                        for (AVCaptureDeviceFormat *frmt in self.selectedVideoDevice.formats) {
+                            if ([frmt.localizedName isEqualToString:encodedVideoFormat]) {
+                                deviceFormat = frmt;
+                                break;
+                            }
+                        }
+                        if ([self.selectedVideoDevice lockForConfiguration:&error]) {
+                            [self.selectedVideoDevice setActiveFormat:deviceFormat];
+                            [self.selectedVideoDevice unlockForConfiguration];
+                        } else {
+                            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                                [self PresentErrorInLog:error];
+                            });
+                        }
+                        //set video framte rate
+                        AVFrameRateRange *frameRateRange;
+                        for (AVFrameRateRange *frmt in self.selectedVideoDevice.activeFormat.videoSupportedFrameRateRanges) {
+                            if ([frmt.localizedName isEqualToString:encodedVideoFrmRte]) {
+                                frameRateRange = frmt;
+                                break;
+                            }
+                        }
                         if ([[[self.selectedVideoDevice activeFormat] videoSupportedFrameRateRanges] containsObject:frameRateRange])
                         {
                             if ([self.selectedVideoDevice lockForConfiguration:&error]) {
@@ -861,6 +862,8 @@ static BOOL cursorIsHidden = NO;
                                 });
                             }
                         }
+
+                        
                     }
                 }
             }
