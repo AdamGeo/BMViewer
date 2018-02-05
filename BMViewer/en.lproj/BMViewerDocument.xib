@@ -229,6 +229,22 @@ IA
             </subviews>
             <point key="canvasLocation" x="168" y="476.5"/>
         </customView>
+        <customView misplaced="YES" id="kej-Zr-ZbY" customClass="StillAwake">
+            <rect key="frame" x="0.0" y="0.0" width="364" height="236"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="XDL-VG-hBj">
+                    <rect key="frame" x="144" y="109" width="76" height="17"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Still Awake?" id="VXp-do-7Hq">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <point key="canvasLocation" x="168" y="761"/>
+        </customView>
     </objects>
     <resources>
         <image name="Image" width="14" height="14"/>

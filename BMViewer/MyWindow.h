@@ -6,6 +6,7 @@
 }
 
 @property BOOL constrainingToScreenSuspended;
+@property BOOL IsFullscreen;
 
 - (IBAction)ToggleFullscreen:(id)sender;
 

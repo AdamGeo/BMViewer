@@ -453,6 +453,12 @@ static BOOL cursorIsHidden = NO;
 
 #pragma mark - Audio Boost
 - (IBAction)enableBoost:(id)sender {
+    if (![self audioDeviceInput]){
+        [self.boostEnabled setState:NSOffState];
+        [AudioKit stop];
+        [AudioKit disconnectAllInputs];
+        return;
+    }
     [self enableBoost];
 }
 - (void)enableBoost {
@@ -469,7 +475,6 @@ static BOOL cursorIsHidden = NO;
 -(void)setupAudiokit {
     [AudioKit stop];
     [AudioKit disconnectAllInputs];
-    
     dispatch_async(dispatch_get_main_queue(), ^(void) {
         AKDevice* inputDevice;
         for (AKDevice* d in [AudioKit inputDevices]) {
