@@ -31,12 +31,18 @@
                             </menuItem>
                             <menuItem title="Enter Fullscreen" keyEquivalent="f" id="ECS-ZG-xiP">
                                 <connections>
-                                    <action selector="ToggleFullscreen:" target="-1" id="FCo-ck-B2w"/>
+                                    <action selector="ToggleFullscreen:" target="-1" id="Va7-MH-gcG"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Save Preset" keyEquivalent="s" id="lX2-Ws-SIP">
+                            <menuItem title="Save New Preset" keyEquivalent="s" id="a3J-hM-q0z">
                                 <connections>
-                                    <action selector="savePreset:" target="-1" id="63p-Jo-ejK"/>
+                                    <action selector="SaveNewPreset:" target="-1" id="gOC-b8-DbC"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Save Preset" alternate="YES" keyEquivalent="s" id="lX2-Ws-SIP">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES"/>
+                                <connections>
+                                    <action selector="savePreset:" target="-1" id="FzQ-rt-5k6"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Load Next Preset" tag="8" keyEquivalent="p" id="YXT-Dg-Y21">

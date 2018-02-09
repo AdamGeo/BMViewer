@@ -8,5 +8,5 @@
 #import <Cocoa/Cocoa.h>
 
 @interface StillAwake : NSView
-
+@property (nonatomic) NSColor *backgroundColor;
 @end

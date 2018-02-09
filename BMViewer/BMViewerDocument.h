@@ -19,7 +19,6 @@
     IBOutlet NSView             *saveDialogCustomView;
     NSView                      *__weak previewView;
     AVCaptureVideoPreviewLayer  *previewLayer;
-    
     AVCaptureSession            *session;
     AVCaptureDeviceInput        *videoDeviceInput;
     AVCaptureDeviceInput        *audioDeviceInput;
@@ -33,6 +32,7 @@
     NSTimer                     *__weak audioLevelTimer;
     
     NSArray                     *observers;
+    
 }
 
 //@property (strong) NSString *defVideoDevice;
@@ -64,8 +64,12 @@
 #pragma mark - Preview
 @property (weak) IBOutlet NSView *previewView;
 @property (assign) float previewVolume;
+@property (strong) AVCaptureVideoPreviewLayer *previewLayer;
 
+- (IBAction)SaveNewPreset:(id)sender;
 - (IBAction)savePreset:(id)sender;
+- (IBAction)EqPreset:(id)sender;
+
 - (IBAction)loadPreset:(id)sender;
 - (IBAction)videoTypeChange:(id)sender;
 @property (weak) IBOutlet NSButton *makeSmaller;
@@ -73,6 +77,5 @@
 @property (weak) IBOutlet NSTextField *exportLbl;
 
 - (IBAction)recordOnOff:(id)sender;
-- (IBAction)enableBoost:(id)sender;
 
 @end

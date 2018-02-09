@@ -17,6 +17,8 @@
 		0FC025AE200C857C001A3E06 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FC025AD200C857C001A3E06 /* IOKit.framework */; };
 		0FC3ADFC20102C750055A9CB /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FC3ADFB20102C750055A9CB /* CoreVideo.framework */; };
 		0FEB3DA52016B2CE00FECC34 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FEB3DA42016B2CE00FECC34 /* AudioUnit.framework */; };
+		0FF50B9620298C3D0095FF11 /* AudioKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FF50B9420298C200095FF11 /* AudioKitUI.framework */; };
+		0FF50B9720298C3D0095FF11 /* AudioKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0FF50B9420298C200095FF11 /* AudioKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0FF97E6220270787005C8055 /* StillAwake.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FF97E6120270787005C8055 /* StillAwake.m */; };
 		2FC9301E139D85A500DA0D4F /* AVCaptureDeviceFormat_BMViewerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FC9301D139D85A500DA0D4F /* AVCaptureDeviceFormat_BMViewerAdditions.m */; };
 		2FC93021139D875D00DA0D4F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC93020139D875D00DA0D4F /* CoreMedia.framework */; };
@@ -38,6 +40,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				0FF50B9720298C3D0095FF11 /* AudioKitUI.framework in Embed Frameworks */,
 				0F82901C20186BBC00C27FA2 /* AudioKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -60,6 +63,7 @@
 		0FEB3DA02016B22200FECC34 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		0FEB3DA22016B23F00FECC34 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0FEB3DA42016B2CE00FECC34 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		0FF50B9420298C200095FF11 /* AudioKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioKitUI.framework; path = BMViewer/AudioKitUI.framework; sourceTree = "<group>"; };
 		0FF97E6020270787005C8055 /* StillAwake.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StillAwake.h; sourceTree = "<group>"; };
 		0FF97E6120270787005C8055 /* StillAwake.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StillAwake.m; sourceTree = "<group>"; };
 		2FC9301C139D85A500DA0D4F /* AVCaptureDeviceFormat_BMViewerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVCaptureDeviceFormat_BMViewerAdditions.h; sourceTree = "<group>"; };
@@ -92,6 +96,7 @@
 				0FC3ADFC20102C750055A9CB /* CoreVideo.framework in Frameworks */,
 				0FC025AE200C857C001A3E06 /* IOKit.framework in Frameworks */,
 				E9C967F8137B51A700C6D18B /* AVFoundation.framework in Frameworks */,
+				0FF50B9620298C3D0095FF11 /* AudioKitUI.framework in Frameworks */,
 				2FC93025139D8CC500DA0D4F /* AudioToolbox.framework in Frameworks */,
 				E9C967D3137B516200C6D18B /* Cocoa.framework in Frameworks */,
 				2FC93021139D875D00DA0D4F /* CoreMedia.framework in Frameworks */,
@@ -122,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				0F82901A20186BBC00C27FA2 /* AudioKit.framework */,
+				0FF50B9420298C200095FF11 /* AudioKitUI.framework */,
 				0FEB3DA42016B2CE00FECC34 /* AudioUnit.framework */,
 				0FEB3DA22016B23F00FECC34 /* Foundation.framework */,
 				0FEB3DA02016B22200FECC34 /* CoreAudio.framework */,

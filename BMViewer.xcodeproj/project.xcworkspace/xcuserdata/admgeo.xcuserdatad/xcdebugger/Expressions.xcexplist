@@ -14,33 +14,6 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[BMViewerDocument exportProgress:]:BMViewerDocument.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "exporter.progress">
-            </PersistentString>
-            <PersistentString
-               value = "exporter.status">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[BMViewerDocument setWindow:]:BMViewerDocument.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "window.title">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "-[AVCaptureDeviceFormat(BMViewerAdditions) localizedName]:AVCaptureDeviceFormat_BMViewerAdditions.m">
-         <PersistentStrings>
-            <PersistentString
-               value = "[self formatDescription]">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
          contextName = "-[BMViewerDocument updateAudioLevels:]:BMViewerDocument.m">
          <PersistentStrings>
             <PersistentString
@@ -55,7 +28,56 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "-[BMViewerDocument setWindow:]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "window.title">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument loadPreset:]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[nextDict objectForKey:@&quot;filterBand1&quot;]">
+            </PersistentString>
+            <PersistentString
+               value = "[[nextDict objectForKey:@&quot;filterBand1&quot;] doubleValue]">
+            </PersistentString>
+            <PersistentString
+               value = "[nextDict objectForKey:@&quot;filterBand10&quot;]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument exportProgress:]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "exporter.progress">
+            </PersistentString>
+            <PersistentString
+               value = "exporter.status">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "-[BMViewerDocument videoTypeChange:]:BMViewerDocument.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[AVCaptureDeviceFormat(BMViewerAdditions) localizedName]:AVCaptureDeviceFormat_BMViewerAdditions.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[self formatDescription]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[BMViewerDocument deviceChangedAlert:]:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "alertLbl.superview">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "__24-[BMViewerDocument init]_block_invoke.163:BMViewerDocument.m">
@@ -72,10 +94,10 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[BMViewerDocument deviceChangedAlert:]:BMViewerDocument.m">
+         contextName = "-[NotifyMenu insertItem:atIndex:]:NotifyMenu.m">
          <PersistentStrings>
             <PersistentString
-               value = "alertLbl.superview">
+               value = "newItem.title">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -118,10 +140,16 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "-[NotifyMenu insertItem:atIndex:]:NotifyMenu.m">
+         contextName = "-[MyWindow checkAsleep]:MyWindow.m">
          <PersistentStrings>
             <PersistentString
-               value = "newItem.title">
+               value = "overlayLayer.frame">
+            </PersistentString>
+            <PersistentString
+               value = "[previewView.layer.sublayers count]">
+            </PersistentString>
+            <PersistentString
+               value = "previewView.layer.frame">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -141,6 +169,20 @@
          <PersistentStrings>
             <PersistentString
                value = "self.defVideoDevice">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[MyWindow isFullscreen]:MyWindow.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[self styleMask]">
+            </PersistentString>
+            <PersistentString
+               value = "([self styleMask] &amp; NSWindowStyleMaskFullScreen)">
+            </PersistentString>
+            <PersistentString
+               value = "1 &lt;&lt; 13">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -228,6 +270,20 @@
          <PersistentStrings>
             <PersistentString
                value = "[[AudioKit inputDevice] isEqual:inputDevice]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__24-[BMViewerDocument init]_block_invoke.105:BMViewerDocument.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[incomingEvent keyCode]">
+            </PersistentString>
+            <PersistentString
+               value = "[incomingEvent modifierFlags]">
+            </PersistentString>
+            <PersistentString
+               value = "(1 &lt;&lt; 20)">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

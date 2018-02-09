@@ -12,8 +12,8 @@
     BOOL foundVFR;
     BOOL foundAudio;
     BOOL foundAFormat;
-    BOOL _firstLoad;
     BOOL _exportMP4;
+    BOOL _EnableAudioEffects;
     NSEvent *eventMon;
     NSTextField *alertLbl;
     NSInteger lastPreset;
@@ -21,7 +21,17 @@
     IOPMAssertionID assertionID;
     CFStringRef reasonForActivity;
     
-    AKAmplitudeTracker *volTracker;
+    AKEqualizerFilter *f1;
+    AKEqualizerFilter *f2;
+    AKEqualizerFilter *f3;
+    AKEqualizerFilter *f4;
+    AKEqualizerFilter *f5;
+    AKEqualizerFilter *f6;
+    AKEqualizerFilter *f7;
+    AKEqualizerFilter *f8;
+    AKEqualizerFilter *f9;
+    AKEqualizerFilter *f10;
+    AKBooster *boost;
 }
 
 @property (strong) AVCaptureDeviceInput *videoDeviceInput;
@@ -30,7 +40,7 @@
 @property (strong) AVCaptureAudioPreviewOutput *audioPreviewOutput;
 @property (strong) AVCaptureMovieFileOutput *movieFileOutput;
 @property (strong) AVCaptureConnection *movieFileOutputConnection;
-@property (strong) AVCaptureVideoPreviewLayer *previewLayer;
+//@property (strong) AVCaptureVideoPreviewLayer *previewLayer;
 @property (weak) NSTimer *audioLevelTimer;
 @property (weak) NSTimer *exportProgressTimer;
 @property (strong) NSArray *observers;
@@ -40,10 +50,24 @@
 @property (weak) IBOutlet NSPopUpButton *videoFrmRteList;
 @property (weak) IBOutlet NSPopUpButton *audioDeviceList;
 @property (weak) IBOutlet NSPopUpButton *audioFormatList;
-@property (weak) IBOutlet NSPopUpButton *audioOutList;
-@property (weak) IBOutlet NSButton      *boostEnabled;
+@property (weak) IBOutlet NSSlider      *boostLevel;
+@property (weak) IBOutlet NSSlider *filterBand1;
+@property (weak) IBOutlet NSSlider *filterBand2;
+@property (weak) IBOutlet NSSlider *filterBand3;
+@property (weak) IBOutlet NSSlider *filterBand4;
+@property (weak) IBOutlet NSSlider *filterBand5;
+@property (weak) IBOutlet NSSlider *filterBand6;
+@property (weak) IBOutlet NSSlider *filterBand7;
+@property (weak) IBOutlet NSSlider *filterBand8;
+@property (weak) IBOutlet NSSlider *filterBand9;
+@property (weak) IBOutlet NSSlider *filterBand10;
+@property (weak) IBOutlet NSButton *AudioEffectsEnabled;
+- (IBAction)AudioEffectsEnabledChanged:(NSButton *)sender;
 
 - (void)refreshDevices;
+- (IBAction)filterChange:(id)sender;
+- (IBAction)boostChange:(id)sender;
+- (IBAction)EqReset:(id)sender;
 
 @end
 
@@ -53,7 +77,7 @@
 
 @implementation BMViewerDocument {}
 
-@synthesize videoDeviceInput, audioDeviceInput, videoDevices, audioDevices, session, audioPreviewOutput, movieFileOutput, movieFileOutputConnection, previewView, previewLayer, audioLevelTimer, exportProgressTimer, observers, frameForNonFullScreenMode, viewForNonFullScreenMode, videoDeviceList, videoFormatList, videoFrmRteList, audioDeviceList, audioFormatList, makeSmaller, rad_MOV, exportLbl, boostEnabled, audioOutList;
+@synthesize videoDeviceInput, audioDeviceInput, videoDevices, audioDevices, session, audioPreviewOutput, movieFileOutput, movieFileOutputConnection, previewView, previewLayer, audioLevelTimer, exportProgressTimer, observers, frameForNonFullScreenMode, viewForNonFullScreenMode, videoDeviceList, videoFormatList, videoFrmRteList, audioDeviceList, audioFormatList, makeSmaller, rad_MOV, exportLbl, filterBand1, filterBand2, filterBand3, filterBand4, filterBand5, filterBand6, filterBand7, filterBand8, filterBand9, filterBand10, boostLevel, AudioEffectsEnabled;
 static BOOL cursorIsHidden = NO; 
 
 - (id)init
@@ -63,8 +87,6 @@ static BOOL cursorIsHidden = NO;
         reasonForActivity = CFSTR("BMViewer is viewing");
         _exportMP4 = NO;
         lastPreset = -1;
-        
-        _firstLoad = YES;
         
         [[self.videoDeviceList menu] setDelegate:self];
         [[self.videoFormatList menu] setDelegate:self];
@@ -99,7 +121,6 @@ static BOOL cursorIsHidden = NO;
                                                                         object:nil
                                                                          queue:[NSOperationQueue mainQueue]
                                                                     usingBlock:^(NSNotification *note) {
-                                                                        _firstLoad = YES;
                                                                         [self refreshDevices];
                                                                     }];
         id deviceWasDisconnectedObserver = [notificationCenter addObserverForName:AVCaptureDeviceWasDisconnectedNotification
@@ -113,6 +134,8 @@ static BOOL cursorIsHidden = NO;
                                                                      object:nil
                                                                       queue:[NSOperationQueue mainQueue]
                                                                  usingBlock:^(NSNotification *note) {
+                                                                     self.frameForNonFullScreenMode = [(MyWindow*)note.object frame];
+                                                                     self.viewForNonFullScreenMode = previewView.frame;
                                                                      [self hideCursor];
                                                                      IOPMAssertionCreateWithName(kIOPMAssertionTypePreventUserIdleDisplaySleep, kIOPMAssertionLevelOn, reasonForActivity, &assertionID);
                                                                  }];
@@ -125,8 +148,40 @@ static BOOL cursorIsHidden = NO;
                                                                                 if (assertionID)
                                                                                     IOPMAssertionRelease(assertionID);
                                                                             }];
-    
-        observers = [[NSArray alloc] initWithObjects:runtimeErrorObserver, didStartRunningObserver, didStopRunningObserver, deviceWasConnectedObserver, deviceWasDisconnectedObserver, enterFullScreenObserver, exitFullScreenNotificationObserver,  nil]; // menuDidAddItemObserver menuDidChangeObserver,
+        
+        id willSleepNotificationObserver = [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceScreensDidSleepNotification
+                                                                                                           object:nil queue:[NSOperationQueue mainQueue]
+                                                                                                       usingBlock:^(NSNotification *note) {
+                                                                                                           [AudioKit stop];
+                                                                                                           [[self session] stopRunning];
+                                                                                                       }];
+        id didWakeNotificationObserver = [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceScreensDidWakeNotification
+                                                                                                           object:nil queue:[NSOperationQueue mainQueue]
+                                                                                                       usingBlock:^(NSNotification *note) {
+                                                                                                           [[self session] startRunning];
+                                                                                                           [AudioKit start];
+                                                                                                       }];
+        
+        eventMon = [NSEvent addLocalMonitorForEventsMatchingMask: (NSEventMaskKeyDown)
+                                                handler:^(NSEvent *incomingEvent) {
+                                                    NSEvent *result = incomingEvent;
+                                                    if ([incomingEvent type] == NSEventTypeKeyDown) {
+                                                        NSUInteger flags = [incomingEvent modifierFlags] & NSEventModifierFlagDeviceIndependentFlagsMask;
+                                                        if ([incomingEvent keyCode] == 11 && flags == NSEventModifierFlagCommand ) {
+                                                            [self.AudioEffectsEnabled performClick:self];
+                                                            result = nil;
+                                                        }
+                                                        if ([incomingEvent keyCode] == 53) {
+                                                            [(MyWindow*)self.windowForSheet toggleFullScreen:nil];
+                                                            result = nil;
+                                                        }
+                                                        else {
+                                                        }
+                                                    }
+                                                    return result;
+                                                }];
+        
+        observers = [[NSArray alloc] initWithObjects:runtimeErrorObserver, didStartRunningObserver, didStopRunningObserver, deviceWasConnectedObserver, deviceWasDisconnectedObserver, enterFullScreenObserver, exitFullScreenNotificationObserver, didWakeNotificationObserver, willSleepNotificationObserver, nil];
         movieFileOutput = [[AVCaptureMovieFileOutput alloc] init];
         [movieFileOutput setDelegate:self];
         movieFileOutputConnection = [movieFileOutput connectionWithMediaType:AVMediaTypeVideo];
@@ -134,23 +189,9 @@ static BOOL cursorIsHidden = NO;
         audioPreviewOutput = [[AVCaptureAudioPreviewOutput alloc] init];
         [audioPreviewOutput setVolume:1.f];
         [session addOutput:audioPreviewOutput];
-//        [self logCurrentConfig:nil];
-//        [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(logCurrentConfig:) userInfo:nil repeats:YES];
-        
         [self refreshDevices];
     }
     return self;
-}
-
--(void)logCurrentConfig:(NSTimer *)pTmpTimer {
-    NSLog(@"\nvideo: %@\nformat:%@\nrate: %@\nAudio: %@\nformat: %@\n",
-          [self selectedVideoDevice].localizedName,
-          [self videoDeviceFormat].localizedName,
-          [self frameRateRange].localizedName,
-          [self selectedAudioDevice].localizedName,
-          [self audioDeviceFormat].localizedName);
-//    NSLog(@"\n------------------\nrate: %@\n------------------\n",
-//          [self frameRateRange].localizedName);
 }
 
 -(BOOL) validateMenuItem:(NSMenuItem *)menuItem {
@@ -161,21 +202,6 @@ static BOOL cursorIsHidden = NO;
     return [menuItem isEnabled];
 }
 
-//-(void) saveDeviceOptions {
-//    NSString *selVideoDevice = self.videoDeviceList.selectedItem.title;
-//    NSString *selVideoFormat  = self.videoFormatList.selectedItem.title;
-//    NSString *selVideoFrmRte  = self.videoFrmRteList.selectedItem.title;
-//    NSString *selAudioDevice  = self.audioDeviceList.selectedItem.title;
-//    NSString *selAudioFormat  = self.audioFormatList.selectedItem.title;
-//    NSInteger isBoostEnabled  = self.boostEnabled.state;
-//    [[NSUserDefaults standardUserDefaults] setObject:selVideoDevice forKey:@"VideoDevice"];
-//    [[NSUserDefaults standardUserDefaults] setObject:selVideoFormat forKey:@"VideoFormat"];
-//    [[NSUserDefaults standardUserDefaults] setObject:selVideoFrmRte forKey:@"VideoFrmRte"];
-//    [[NSUserDefaults standardUserDefaults] setObject:selAudioDevice forKey:@"AudioDevice"];
-//    [[NSUserDefaults standardUserDefaults] setObject:selAudioFormat forKey:@"AudioFormat"];
-//    [[NSUserDefaults standardUserDefaults] setInteger:isBoostEnabled forKey:@"isBoostEnabled"];
-//    [[NSUserDefaults standardUserDefaults] synchronize];
-//}
 #pragma mark -
 #pragma mark Enter Full Screen
 - (NSSize)window:(NSWindow *)window willUseFullScreenContentSize:(NSSize)proposedSize
@@ -213,8 +239,6 @@ static BOOL cursorIsHidden = NO;
 
 - (void)window:(NSWindow *)window startCustomAnimationToEnterFullScreenWithDuration:(NSTimeInterval)duration
 {
-    self.frameForNonFullScreenMode = [window frame];
-    self.viewForNonFullScreenMode = previewView.frame;
     [previewView setAutoresizingMask:NSViewNotSizable];
     [self invalidateRestorableState];
     NSScreen *screen = [[NSScreen screens] objectAtIndex:0];
@@ -259,6 +283,11 @@ static BOOL cursorIsHidden = NO;
 {
 }
 
+- (void)cancelOperation:(id)sender
+{
+    NSLog(@"cancelOperation: %@", sender);
+}
+
 #pragma mark -
 #pragma mark Full Screen Support: Persisting and Restoring Window's Non-FullScreen Frame
 
@@ -273,8 +302,6 @@ static BOOL cursorIsHidden = NO;
     [NSCursor unhide];
     [NSEvent removeMonitor:eventMon];
     cursorIsHidden = NO;
-    _firstLoad = YES;
-//    [self saveDeviceOptions];
     [[self audioLevelTimer] invalidate];
     [[self session] stopRunning];
     [[self movieFileOutput] setDelegate:nil];
@@ -292,12 +319,6 @@ static BOOL cursorIsHidden = NO;
 - (void)windowControllerDidLoadNib:(NSWindowController *) aController
 {
     [super windowControllerDidLoadNib:aController];
-//    if (([self.defVideoDevice isEqualToString:@"No Value"] || [self.defAudioDevice isEqualToString:@"No Value"])||(self.defVideoDevice == nil || self.defAudioDevice == nil)) {
-//        _firstLoad = NO;
-//    }
-//    else {
-        _firstLoad = YES;
-//    }
     CALayer *previewViewLayer = [[self previewView] layer];
     [previewViewLayer setBackgroundColor:CGColorGetConstantColor(kCGColorBlack)];
     AVCaptureVideoPreviewLayer *newPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:[self session]];
@@ -311,9 +332,8 @@ static BOOL cursorIsHidden = NO;
     [pview addSubview:self.previewView];
     [[self session] startRunning];
     [self.exportLbl setHidden:YES];
-    
-    [self.boostEnabled setKeyEquivalentModifierMask: NSEventModifierFlagCommand];
-    [self.boostEnabled setKeyEquivalent:@"b"];
+    lastPreset = -1;
+    [self loadPreset:nil];
 }
 
 - (void)didPresentErrorWithRecovery:(BOOL)didRecover contextInfo:(void  *)contextInfo
@@ -332,6 +352,7 @@ static BOOL cursorIsHidden = NO;
 }
 
 #pragma mark - Device selection
+
 - (void)refreshDevices
 {
     [self setVideoDevices:[[AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo] arrayByAddingObjectsFromArray:[AVCaptureDevice devicesWithMediaType:AVMediaTypeMuxed]]];
@@ -351,6 +372,8 @@ static BOOL cursorIsHidden = NO;
     [self setVideoDeviceFormat:videoDeviceFormat];
     [self setFrameRateRange:videoDeviceFrmrte];
 }
+
+
 
 - (AVCaptureDevice *)selectedVideoDevice
 {
@@ -423,6 +446,7 @@ static BOOL cursorIsHidden = NO;
 
 - (void)setSelectedAudioDevice:(AVCaptureDevice *)selectedAudioDevice
 {
+    [self resetAudioKit];
     [[self session] beginConfiguration];
     
     if ([self audioDeviceInput]) {
@@ -440,7 +464,7 @@ static BOOL cursorIsHidden = NO;
         } else {
             [[self session] addInput:newAudioDeviceInput];
             [self setAudioDeviceInput:newAudioDeviceInput];
-            [self enableBoost];
+            [self enableAudioEffects];
         }
         
     }
@@ -449,27 +473,107 @@ static BOOL cursorIsHidden = NO;
     [[self session] commitConfiguration]; // changes video format here ?
     [self setVideoDeviceFormat:videoDeviceFormat];
     [self setFrameRateRange:videoDeviceFrmrte];
+    [self enableAudioEffects];
 }
 
 #pragma mark - Audio Boost
-- (IBAction)enableBoost:(id)sender {
-    if (![self audioDeviceInput]){
-        [self.boostEnabled setState:NSOffState];
-        [AudioKit stop];
-        [AudioKit disconnectAllInputs];
-        return;
+
+- (IBAction)AudioEffectsEnabledChanged:(NSButton *)sender {
+    if (_EnableAudioEffects != (sender.state == NSControlStateValueOn)) {
+        _EnableAudioEffects = (sender.state == NSControlStateValueOn);
+        [self resetAudioKit];
+        [self enableAudioEffects];
     }
-    [self enableBoost];
 }
-- (void)enableBoost {
-    if ([self.boostEnabled state] == NSOnState) {
-//        [self setupAudiokit];
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(setupAudiokit) object:nil];
+
+- (void) resetAudioKit {
+    [AudioKit stop];
+    [AudioKit disconnectAllInputs];
+    [audioPreviewOutput setVolume:1];
+}
+- (void)enableAudioEffects {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(setupAudiokit) object:nil];
+    if ([self selectedAudioDevice] != nil && _EnableAudioEffects == YES) {
         [self performSelector:@selector(setupAudiokit) withObject:nil afterDelay:0.5];
     }
     else {
-        [AudioKit stop];
+        [audioPreviewOutput setVolume:1];
     }
+}
+
+- (IBAction)filterChange:(id)sender
+{
+    if ([sender isEqual:self.filterBand1])
+        [f1 setGain:self.filterBand1.doubleValue];
+    else if ([sender isEqual:self.filterBand2])
+        [f2 setGain:self.filterBand2.doubleValue];
+    else if ([sender isEqual:self.filterBand3])
+        [f3 setGain:self.filterBand3.doubleValue];
+    else if ([sender isEqual:self.filterBand4])
+        [f4 setGain:self.filterBand4.doubleValue];
+    else if ([sender isEqual:self.filterBand5])
+        [f5 setGain:self.filterBand5.doubleValue];
+    else if ([sender isEqual:self.filterBand6])
+        [f6 setGain:self.filterBand6.doubleValue];
+    else if ([sender isEqual:self.filterBand7])
+        [f7 setGain:self.filterBand7.doubleValue];
+    else if ([sender isEqual:self.filterBand8])
+        [f8 setGain:self.filterBand8.doubleValue];
+    else if ([sender isEqual:self.filterBand9])
+        [f9 setGain:self.filterBand9.doubleValue];
+    else if ([sender isEqual:self.filterBand10])
+        [f10 setGain:self.filterBand10.doubleValue];
+}
+
+- (IBAction)boostChange:(id)sender {
+//    NSLog(@"boost set: %f", self.boostLevel.floatValue);
+    [boost setGain:self.boostLevel.doubleValue];
+}
+
+- (IBAction)EqReset:(id)sender {
+    [self.filterBand1 setDoubleValue:0 ];
+    [self filterChange:self.filterBand1];
+    [self.filterBand2 setDoubleValue:0 ];
+    [self filterChange:self.filterBand2];
+    [self.filterBand3 setDoubleValue:0 ];
+    [self filterChange:self.filterBand3];
+    [self.filterBand4 setDoubleValue:0 ];
+    [self filterChange:self.filterBand4];
+    [self.filterBand5 setDoubleValue:0 ];
+    [self filterChange:self.filterBand5];
+    [self.filterBand6 setDoubleValue:0 ];
+    [self filterChange:self.filterBand6];
+    [self.filterBand7 setDoubleValue:0 ];
+    [self filterChange:self.filterBand7];
+    [self.filterBand8 setDoubleValue:0 ];
+    [self filterChange:self.filterBand8];
+    [self.filterBand9 setDoubleValue:0 ];
+    [self filterChange:self.filterBand9];
+    [self.filterBand10 setDoubleValue:0 ];
+    [self filterChange:self.filterBand10];
+}
+
+- (IBAction)EqPreset:(id)sender {
+    [self.filterBand1 setDoubleValue:4 ];
+    [self filterChange:self.filterBand1];
+    [self.filterBand2 setDoubleValue:2 ];
+    [self filterChange:self.filterBand2];
+    [self.filterBand3 setDoubleValue:0.5 ];
+    [self filterChange:self.filterBand3];
+    [self.filterBand4 setDoubleValue:0 ];
+    [self filterChange:self.filterBand4];
+    [self.filterBand5 setDoubleValue:-0.5 ];
+    [self filterChange:self.filterBand5];
+    [self.filterBand6 setDoubleValue:-1 ];
+    [self filterChange:self.filterBand6];
+    [self.filterBand7 setDoubleValue:-0.5 ];
+    [self filterChange:self.filterBand7];
+    [self.filterBand8 setDoubleValue:0.5 ];
+    [self filterChange:self.filterBand8];
+    [self.filterBand9 setDoubleValue:3 ];
+    [self filterChange:self.filterBand9];
+    [self.filterBand10 setDoubleValue:4 ];
+    [self filterChange:self.filterBand10];
 }
 
 -(void)setupAudiokit {
@@ -480,29 +584,60 @@ static BOOL cursorIsHidden = NO;
         for (AKDevice* d in [AudioKit inputDevices]) {
             if ([[d.description stringByReplacingOccurrencesOfString:@"<Device: " withString:@""] hasPrefix:[self selectedAudioDevice].localizedName]) {
                 inputDevice = d;
+                
                 break;
             }
         }
         if (inputDevice != nil) {
             NSError *error = nil;
             if ([AudioKit setInputDevice:inputDevice error:&error]) {
+                
+                // audiokit destroys sync in recording... ??? ... ???
+                
+                [audioPreviewOutput setVolume:0];
+                
                 AKMicrophone *mic = [[AKMicrophone alloc] init];
                 
-                volTracker = [[AKAmplitudeTracker alloc] init:mic halfPowerPoint:0.5 threshold:1.0 thresholdCallback:^(BOOL f) {
-//                    NSLog(@"thresholdCallback");
-                }];
+//                CMClockRef clock = session.masterClock;
                 
-                AKBooster *boost = [[AKBooster alloc] init:volTracker gain:10.0];
-
-                [AudioKit setOutput:boost];
+                NSLog(@"this is shit. make paramatric eq");
+                //    var parametricEQ = AKParametricEQ(player)
+                //    parametricEQ.centerFrequency = 4000 // Hz
+                //    parametricEQ.q = 1.0 // Hz
+                //    parametricEQ.gain = 10 // dB
+                
+                boost = [[AKBooster alloc] init:mic gain:self.boostLevel.doubleValue];
+                
+                
+                f1 = [[AKEqualizerFilter alloc] init:boost centerFrequency:32 bandwidth:8 gain:self.filterBand1.doubleValue];
+                f2 = [[AKEqualizerFilter alloc] init:f1 centerFrequency:64 bandwidth:16 gain:self.filterBand2.doubleValue];
+                f3 = [[AKEqualizerFilter alloc] init:f2 centerFrequency:125 bandwidth:32 gain:self.filterBand3.doubleValue];
+                f4 = [[AKEqualizerFilter alloc] init:f3 centerFrequency:250 bandwidth:64 gain:self.filterBand4.doubleValue];
+                f5 = [[AKEqualizerFilter alloc] init:f4 centerFrequency:500 bandwidth:128 gain:self.filterBand5.doubleValue];
+                f6 = [[AKEqualizerFilter alloc] init:f5 centerFrequency:1000 bandwidth:256 gain:self.filterBand6.doubleValue];
+                f7 = [[AKEqualizerFilter alloc] init:f6 centerFrequency:2000 bandwidth:512 gain:self.filterBand7.doubleValue];
+                f8 = [[AKEqualizerFilter alloc] init:f7 centerFrequency:4000 bandwidth:1024 gain:self.filterBand8.doubleValue];
+                f9 = [[AKEqualizerFilter alloc] init:f8 centerFrequency:8000 bandwidth:2048 gain:self.filterBand9.doubleValue];
+                f10 = [[AKEqualizerFilter alloc] init:f9 centerFrequency:16000 bandwidth:4096 gain:self.filterBand10.doubleValue];
+                
+                [AudioKit setOutput:f10];
                 [AKSettings setDisableAVAudioSessionCategoryManagement:TRUE];
                 [AKSettings setDefaultToSpeaker:TRUE];
-                [AKSettings setPlaybackWhileMuted:TRUE];
+                [AKSettings setPlaybackWhileMuted:FALSE];
                 [AKSettings setAudioInputEnabled:FALSE];
                 [AudioKit start];
-                [volTracker start];
-//                [self logCurrentConfig:nil];
-//                NSLog(@"[AudioKit start]");
+                
+                [self filterChange:self.filterBand1];
+                [self filterChange:self.filterBand2];
+                [self filterChange:self.filterBand3];
+                [self filterChange:self.filterBand4];
+                [self filterChange:self.filterBand5];
+                [self filterChange:self.filterBand6];
+                [self filterChange:self.filterBand7];
+                [self filterChange:self.filterBand8];
+                [self filterChange:self.filterBand9];
+                [self filterChange:self.filterBand10];
+                
             }
             else {
                 NSLog(@"Set InputDevice for AudioKit failed: %@", error.localizedDescription);
@@ -563,7 +698,7 @@ static BOOL cursorIsHidden = NO;
             [self PresentErrorInLog:error];
         });
     }
-    [self enableBoost];
+    [self enableAudioEffects];
 }
 
 + (NSSet *)keyPathsForValuesAffectingAudioDeviceFormat
@@ -578,6 +713,7 @@ static BOOL cursorIsHidden = NO;
 
 - (void)setAudioDeviceFormat:(AVCaptureDeviceFormat *)deviceFormat
 {
+    [self resetAudioKit];
     NSError *error = nil;
     AVCaptureDevice *audioDevice = [self selectedAudioDevice];
     if ([audioDevice lockForConfiguration:&error]) {
@@ -588,7 +724,7 @@ static BOOL cursorIsHidden = NO;
             [self PresentErrorInLog:error];
         });
     }
-    [self enableBoost];
+    [self enableAudioEffects];
 }
 
 + (NSSet *)keyPathsForValuesAffectingFrameRateRange
@@ -619,14 +755,13 @@ static BOOL cursorIsHidden = NO;
         if ([[self selectedVideoDevice] lockForConfiguration:&error]) {
             [[self selectedVideoDevice] setActiveVideoMinFrameDuration:[frameRateRange minFrameDuration]];
             [[self selectedVideoDevice] unlockForConfiguration];
-            _firstLoad = NO;
         } else {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 [self PresentErrorInLog:error];
             });
         }
     }
-    [self enableBoost];
+    [self enableAudioEffects];
 }
 #pragma mark - Recording
 
@@ -660,6 +795,9 @@ static BOOL cursorIsHidden = NO;
 - (void)setRecording:(BOOL)record
 {
     if (record) {
+        
+        [self resetAudioKit];
+        
         NSURL *tmplte = [[NSURL fileURLWithPath:NSTemporaryDirectory()] URLByAppendingPathComponent:@"BMViewer_XXXXXX"];
         char buffer[PATH_MAX] = {0};
         [tmplte getFileSystemRepresentation:buffer maxLength:sizeof(buffer)];
@@ -685,24 +823,41 @@ static BOOL cursorIsHidden = NO;
         }
     } else {
         [[self movieFileOutput] stopRecording];
+        [self enableAudioEffects];
     }
 }
 
 #pragma mark - Presets load/save
-- (IBAction)savePreset:(id)sender {
+
+
+- (IBAction)SaveNewPreset:(id)sender {
+    
+//    save currently loaded preset or save new for command hold
+    
     NSMutableDictionary *newpreset = [NSMutableDictionary dictionary];
     NSString *encodedVideoDevice = [self selectedVideoDevice].localizedName;
     NSString *encodedVideoFormat = [self videoDeviceFormat].localizedName;
     NSString *encodedVideoFrmRte = [self frameRateRange].localizedName;
     NSString *encodedAudioDevice = [self selectedAudioDevice].localizedName;
     NSString *encodedAudioFormat = [self audioDeviceFormat].localizedName;
-    NSInteger isBoostEnabled  = self.boostEnabled.state;
     [newpreset setValue:encodedVideoDevice ? encodedVideoDevice : @"No Value" forKey:@"VideoDevice"];
     [newpreset setValue:encodedVideoFormat ? encodedVideoFormat : @"No Value" forKey:@"VideoFormat"];
     [newpreset setValue:encodedVideoFrmRte ? encodedVideoFrmRte : @"No Value" forKey:@"VideoFrmRte"];
     [newpreset setValue:encodedAudioDevice ? encodedAudioDevice : @"No Value" forKey:@"AudioDevice"];
     [newpreset setValue:encodedAudioFormat ? encodedAudioFormat : @"No Value" forKey:@"AudioFormat"];
-    [newpreset setValue:[NSNumber numberWithInteger:isBoostEnabled] forKey:@"isBoostEnabled"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.boostLevel.doubleValue] forKey:@"boostLevel"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand1.doubleValue] forKey:@"filterBand1"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand2.doubleValue] forKey:@"filterBand2"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand3.doubleValue] forKey:@"filterBand3"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand4.doubleValue] forKey:@"filterBand4"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand5.doubleValue] forKey:@"filterBand5"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand6.doubleValue] forKey:@"filterBand6"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand7.doubleValue] forKey:@"filterBand7"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand8.doubleValue] forKey:@"filterBand8"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand9.doubleValue] forKey:@"filterBand9"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand10.doubleValue] forKey:@"filterBand10"];
+    [newpreset setValue:[NSNumber numberWithBool:_EnableAudioEffects] forKey:@"EnableAudioEffects"];
+    
     NSInteger psKey = 0;
     NSMutableDictionary *presetDict = [[[NSUserDefaults standardUserDefaults] objectForKey:@"presets"] mutableCopy];
     if (!presetDict) {
@@ -716,6 +871,39 @@ static BOOL cursorIsHidden = NO;
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (IBAction)savePreset:(id)sender {
+    NSDictionary *presetDict = [[[NSUserDefaults standardUserDefaults] objectForKey:@"presets"] mutableCopy];
+    if (!presetDict)
+        return;
+    NSMutableDictionary *newpreset = [[presetDict objectForKey:[NSString stringWithFormat:@"%li", (long)lastPreset]] mutableCopy];
+    NSString *encodedVideoDevice = [self selectedVideoDevice].localizedName;
+    NSString *encodedVideoFormat = [self videoDeviceFormat].localizedName;
+    NSString *encodedVideoFrmRte = [self frameRateRange].localizedName;
+    NSString *encodedAudioDevice = [self selectedAudioDevice].localizedName;
+    NSString *encodedAudioFormat = [self audioDeviceFormat].localizedName;
+    [newpreset setValue:encodedVideoDevice ? encodedVideoDevice : @"No Value" forKey:@"VideoDevice"];
+    [newpreset setValue:encodedVideoFormat ? encodedVideoFormat : @"No Value" forKey:@"VideoFormat"];
+    [newpreset setValue:encodedVideoFrmRte ? encodedVideoFrmRte : @"No Value" forKey:@"VideoFrmRte"];
+    [newpreset setValue:encodedAudioDevice ? encodedAudioDevice : @"No Value" forKey:@"AudioDevice"];
+    [newpreset setValue:encodedAudioFormat ? encodedAudioFormat : @"No Value" forKey:@"AudioFormat"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.boostLevel.doubleValue] forKey:@"boostLevel"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand1.doubleValue] forKey:@"filterBand1"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand2.doubleValue] forKey:@"filterBand2"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand3.doubleValue] forKey:@"filterBand3"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand4.doubleValue] forKey:@"filterBand4"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand5.doubleValue] forKey:@"filterBand5"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand6.doubleValue] forKey:@"filterBand6"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand7.doubleValue] forKey:@"filterBand7"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand8.doubleValue] forKey:@"filterBand8"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand9.doubleValue] forKey:@"filterBand9"];
+    [newpreset setValue:[NSNumber numberWithDouble:self.filterBand10.doubleValue] forKey:@"filterBand10"];
+    [newpreset setValue:[NSNumber numberWithBool:_EnableAudioEffects] forKey:@"EnableAudioEffects"];
+    
+    [presetDict setValue:newpreset forKey:[NSString stringWithFormat:@"%li", (long)lastPreset]];
+    [[NSUserDefaults standardUserDefaults] setObject:presetDict forKey:@"presets"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (IBAction)loadPreset:(id)sender {
     NSDictionary *presetDict = [[NSUserDefaults standardUserDefaults] objectForKey:@"presets"];
     if (!presetDict)
@@ -724,13 +912,13 @@ static BOOL cursorIsHidden = NO;
     if (lastPreset >= [presetDict allKeys].count) {
         lastPreset = 0;
     }
+//    NSLog(@"load lastPreset: %li", (long)lastPreset);
     NSDictionary *nextDict = [presetDict objectForKey:[NSString stringWithFormat:@"%li", (long)lastPreset]];
     NSString *encodedVideoDevice = [nextDict objectForKey:@"VideoDevice"];
     NSString *encodedVideoFormat = [nextDict objectForKey:@"VideoFormat"];
     NSString *encodedVideoFrmRte = [nextDict objectForKey:@"VideoFrmRte"];
     NSString *encodedAudioDevice = [nextDict objectForKey:@"AudioDevice"];
     NSString *encodedAudioFormat = [nextDict objectForKey:@"AudioFormat"];
-    NSNumber *isBoostEnabled = [nextDict objectForKey:@"isBoostEnabled"];
     
     [[self session] beginConfiguration];
     
@@ -743,7 +931,7 @@ static BOOL cursorIsHidden = NO;
         [self setSelectedAudioDevice:nil];
     [[self session] commitConfiguration];
     
-    
+    AVFrameRateRange *frameRateRange;
     if ([encodedVideoDevice isEqualToString:@"No Value"]) {
         [self setSelectedVideoDevice:nil];
     }
@@ -756,122 +944,162 @@ static BOOL cursorIsHidden = NO;
                 [self setFrameRateRange:nil];
             }
             else {
-                if ([encodedAudioDevice isEqualToString:@"No Value"]) {
-                    [self setSelectedAudioDevice:nil];
-                }
-                else {
-                    if ([encodedAudioFormat isEqualToString:@"No Value"]) {
-                        [self setAudioDeviceFormat:nil];
+//                NSLog(@"got through ifs");
+                
+                //set video device
+                NSError *error = nil;
+                for (AVCaptureDevice* dev in videoDevices) {
+                    if ([dev.localizedName isEqualToString:encodedVideoDevice]) {
+                        self.selectedVideoDevice = dev;
+                        break;
                     }
-                    else {
-                        //set video device
-                        NSError *error = nil;
-                        for (AVCaptureDevice* dev in videoDevices) {
-                            if ([dev.localizedName isEqualToString:encodedVideoDevice]) {
-                                self.selectedVideoDevice = dev;
-                                break;
-                            }
-                        }
-                        AVCaptureDeviceInput *newVideoDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:self.selectedVideoDevice error:&error];
-                        if (newVideoDeviceInput == nil) {
-                            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                [self PresentErrorInLog:error];
-                            });
-                        } else {
-                            [[self session] addInput:newVideoDeviceInput];
-                            [self setVideoDeviceInput:newVideoDeviceInput];
-                        }
-
-
-                        //set audio device
-                        if ([self audioDeviceInput]) {
-                            [session removeInput:[self audioDeviceInput]];
-                            [self setAudioDeviceInput:nil];
-                        }
-                        
-                        for (AVCaptureDevice* dev in audioDevices) {
-                            if ([dev.localizedName isEqualToString:encodedAudioDevice]) {
-                                self.selectedAudioDevice = dev;
-                                break;
-                            }
-                        }
-                        if (self.selectedAudioDevice && ![self selectedVideoDeviceProvidesAudio]) {
-                            NSError *error = nil;
-                            AVCaptureDeviceInput *newAudioDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:self.selectedAudioDevice error:&error];
-                            if (newAudioDeviceInput == nil) {
-                                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                    [self PresentErrorInLog:error];
-                                });
-                            } else {
-                                [[self session] addInput:newAudioDeviceInput];
-                                [self setAudioDeviceInput:newAudioDeviceInput];
-                                [self enableBoost];
-                            }
-                        }
-                        //set audio format
-                        for (AVCaptureDeviceFormat *frmt in self.selectedAudioDevice.formats) {
-                            if ([frmt.localizedName isEqualToString:encodedAudioFormat]) {
-                                self.audioDeviceFormat = frmt;
-                                break;
-                            }
-                        }
-                        if ([self.selectedAudioDevice lockForConfiguration:&error]) {
-                            [self.selectedAudioDevice setActiveFormat:self.audioDeviceFormat];
-                            [self.selectedAudioDevice unlockForConfiguration];
-                        } else {
-                            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                [self PresentErrorInLog:error];
-                            });
-                        }
-                        
-                        if ([isBoostEnabled boolValue]) {
-                            [self.boostEnabled setState:NSControlStateValueOff];
-                            [self.boostEnabled performClick:self];
-                        }
-                        else {
-                            [self.boostEnabled setState:NSControlStateValueOn];
-                            [self.boostEnabled performClick:self];
-                        }
-                        //set video format
-                        AVCaptureDeviceFormat *deviceFormat;
-                        for (AVCaptureDeviceFormat *frmt in self.selectedVideoDevice.formats) {
-                            if ([frmt.localizedName isEqualToString:encodedVideoFormat]) {
-                                deviceFormat = frmt;
-                                break;
-                            }
-                        }
-                        if ([self.selectedVideoDevice lockForConfiguration:&error]) {
-                            [self.selectedVideoDevice setActiveFormat:deviceFormat];
-                            [self.selectedVideoDevice unlockForConfiguration];
-                        } else {
-                            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                [self PresentErrorInLog:error];
-                            });
-                        }
-                        //set video framte rate
-                        AVFrameRateRange *frameRateRange;
-                        for (AVFrameRateRange *frmt in self.selectedVideoDevice.activeFormat.videoSupportedFrameRateRanges) {
-                            if ([frmt.localizedName isEqualToString:encodedVideoFrmRte]) {
-                                frameRateRange = frmt;
-                                break;
-                            }
-                        }
-                        if ([[[self.selectedVideoDevice activeFormat] videoSupportedFrameRateRanges] containsObject:frameRateRange])
-                        {
-                            if ([self.selectedVideoDevice lockForConfiguration:&error]) {
-                                [self.selectedVideoDevice setActiveVideoMinFrameDuration:[frameRateRange minFrameDuration]];
-                                [self.selectedVideoDevice unlockForConfiguration];
-                            } else {
-                                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                    [self PresentErrorInLog:error];
-                                });
-                            }
-                        }
-
-                        
+                }
+//                NSLog(@"selectedVideoDevice: %@", self.selectedVideoDevice.localizedName);
+                AVCaptureDeviceInput *newVideoDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:self.selectedVideoDevice error:&error];
+                if (newVideoDeviceInput == nil) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        [self PresentErrorInLog:error];
+                    });
+                } else {
+                    [[self session] addInput:newVideoDeviceInput];
+                    [self setVideoDeviceInput:newVideoDeviceInput];
+                }
+                
+                
+                
+                //set video format
+                AVCaptureDeviceFormat *deviceFormat;
+                for (AVCaptureDeviceFormat *frmt in self.selectedVideoDevice.formats) {
+                    if ([frmt.localizedName isEqualToString:encodedVideoFormat]) {
+                        deviceFormat = frmt;
+                        break;
+                    }
+                }
+//                NSLog(@"setActiveFormat: %@", deviceFormat.localizedName);
+                if ([self.selectedVideoDevice lockForConfiguration:&error]) {
+                    [self.selectedVideoDevice setActiveFormat:deviceFormat];
+                    [self.selectedVideoDevice unlockForConfiguration];
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        [self PresentErrorInLog:error];
+                    });
+                }
+                //set video framte rate
+                
+                for (AVFrameRateRange *frmt in self.selectedVideoDevice.activeFormat.videoSupportedFrameRateRanges) {
+                    if ([frmt.localizedName isEqualToString:encodedVideoFrmRte]) {
+                        frameRateRange = frmt;
+                        break;
+                    }
+                }
+//                NSLog(@"setActiveVideoMinFrameDuration: %@", frameRateRange.localizedName);
+                if ([[[self.selectedVideoDevice activeFormat] videoSupportedFrameRateRanges] containsObject:frameRateRange])
+                {
+                    if ([self.selectedVideoDevice lockForConfiguration:&error]) {
+                        [self.selectedVideoDevice setActiveVideoMinFrameDuration:[frameRateRange minFrameDuration]];
+                        [self.selectedVideoDevice unlockForConfiguration];
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^(void) {
+                            [self PresentErrorInLog:error];
+                        });
                     }
                 }
             }
+        }
+    }
+    
+    if ([encodedAudioDevice isEqualToString:@"No Value"]) {
+        [self setSelectedAudioDevice:nil];
+    }
+    else {
+        if ([encodedAudioFormat isEqualToString:@"No Value"]) {
+            [self setAudioDeviceFormat:nil];
+        }
+        else {
+            NSError *error = nil;
+            //set audio device
+            if ([self audioDeviceInput]) {
+                [session removeInput:[self audioDeviceInput]];
+                [self setAudioDeviceInput:nil];
+            }
+            
+            for (AVCaptureDevice* dev in audioDevices) {
+                if ([dev.localizedName isEqualToString:encodedAudioDevice]) {
+                    self.selectedAudioDevice = dev;
+                    break;
+                }
+            }
+//            NSLog(@"selectedAudioDevice: %@", self.selectedAudioDevice.localizedName);
+            if (self.selectedAudioDevice && ![self selectedVideoDeviceProvidesAudio]) {
+                NSError *error = nil;
+                AVCaptureDeviceInput *newAudioDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:self.selectedAudioDevice error:&error];
+                if (newAudioDeviceInput == nil) {
+                    dispatch_async(dispatch_get_main_queue(), ^(void) {
+                        [self PresentErrorInLog:error];
+                    });
+                } else {
+                    [[self session] addInput:newAudioDeviceInput];
+                    [self setAudioDeviceInput:newAudioDeviceInput];
+                    [self enableAudioEffects];
+                }
+            }
+            //set audio format
+            for (AVCaptureDeviceFormat *frmt in self.selectedAudioDevice.formats) {
+                if ([frmt.localizedName isEqualToString:encodedAudioFormat]) {
+                    self.audioDeviceFormat = frmt;
+                    break;
+                }
+            }
+//            NSLog(@"audioDeviceFormat: %@", self.audioDeviceFormat.localizedName);
+            if ([self.selectedAudioDevice lockForConfiguration:&error]) {
+                [self.selectedAudioDevice setActiveFormat:self.audioDeviceFormat];
+                [self.selectedAudioDevice unlockForConfiguration];
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    [self PresentErrorInLog:error];
+                });
+            }
+            [self setFrameRateRange:frameRateRange];
+            
+            
+            [self.filterBand1 setDoubleValue:[[nextDict objectForKey:@"filterBand1"] doubleValue]];
+            [self.filterBand2 setDoubleValue:[[nextDict objectForKey:@"filterBand2"] doubleValue]];
+            [self.filterBand3 setDoubleValue:[[nextDict objectForKey:@"filterBand3"] doubleValue]];
+            [self.filterBand4 setDoubleValue:[[nextDict objectForKey:@"filterBand4"] doubleValue]];
+            [self.filterBand5 setDoubleValue:[[nextDict objectForKey:@"filterBand5"] doubleValue]];
+            [self.filterBand6 setDoubleValue:[[nextDict objectForKey:@"filterBand6"] doubleValue]];
+            [self.filterBand7 setDoubleValue:[[nextDict objectForKey:@"filterBand7"] doubleValue]];
+            [self.filterBand8 setDoubleValue:[[nextDict objectForKey:@"filterBand8"] doubleValue]];
+            [self.filterBand9 setDoubleValue:[[nextDict objectForKey:@"filterBand9"] doubleValue]];
+            [self.filterBand10 setDoubleValue:[[nextDict objectForKey:@"filterBand10"] doubleValue]];
+            
+
+            
+//            NSLog(@"filterBand10 setDoubleValue: %f", [[nextDict objectForKey:@"filterBand10"] doubleValue]);
+            
+            //                        [self.filterBand1 setNeedsDisplay:YES];
+            //                        [self.filterBand2 setNeedsDisplay:YES];
+            //                        [self.filterBand3 setNeedsDisplay:YES];
+            //                        [self.filterBand4 setNeedsDisplay:YES];
+            //                        [self.filterBand5 setNeedsDisplay:YES];
+            //                        [self.filterBand6 setNeedsDisplay:YES];
+            //                        [self.filterBand7 setNeedsDisplay:YES];
+            //                        [self.filterBand8 setNeedsDisplay:YES];
+            //                        [self.filterBand9 setNeedsDisplay:YES];
+            //                        [self.filterBand10 setNeedsDisplay:YES];
+            
+            [self.boostLevel setDoubleValue:[[nextDict objectForKey:@"boostLevel"] doubleValue]];
+            //                        [newpreset setValue:[NSNumber numberWithDouble:self.boostLevel.doubleValue] forKey:@"boostLevel"];
+            
+            
+            
+            _EnableAudioEffects = ![[nextDict objectForKey:@"EnableAudioEffects"] boolValue];
+            if (_EnableAudioEffects)
+                [self.AudioEffectsEnabled setState:NSControlStateValueOn];
+            else
+                [self.AudioEffectsEnabled setState:NSControlStateValueOff];
+            [self.AudioEffectsEnabled performClick:self];
+            
         }
     }
     
